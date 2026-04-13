@@ -50,6 +50,8 @@ void CServerClient::dispatchFirstPoll() {
     }
 
     m_pid = cred.pid;
+
+    if (onConnect(m_pid)) {}
 }
 
 void CServerClient::sendMessage(const IMessage& message) {
@@ -169,6 +171,16 @@ void CServerClient::onBind(SP<CServerObject> obj) {
 
         break;
     }
+}
+
+bool CServerClient::onConnect(int pid) {
+    for (const auto& p : m_server->m_impls) {
+        for (const auto& on : p->implementation()) {
+            if (on->onConnect)
+                return on->onConnect(pid);
+        }
+    }
+    return true;
 }
 
 void CServerClient::onGeneric(const CGenericProtocolMessage& msg) {

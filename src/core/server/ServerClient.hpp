@@ -23,6 +23,7 @@ namespace Hyprwire {
         SP<CServerObject>              createObject(const std::string& protocol, const std::string& object, uint32_t version, uint32_t seq);
         void                           destroyObject(uint32_t id);
         void                           onBind(SP<CServerObject> obj);
+        bool                           onConnect(int);
         void                           onGeneric(const CGenericProtocolMessage& msg);
         void                           dispatchFirstPoll();
 

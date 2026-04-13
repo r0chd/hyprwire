@@ -693,7 +693,7 @@ class C{}Object {{
     HEADER_IMPL += std::format(R"#(
 class C{}Impl : public Hyprwire::IProtocolServerImplementation {{
   public:
-    C{}Impl(uint32_t version, std::function<void(Hyprutils::Memory::CSharedPointer<Hyprwire::IObject>)>&& bindFn);
+    C{}Impl(uint32_t version, std::function<void(Hyprutils::Memory::CSharedPointer<Hyprwire::IObject>)>&& bindFn, std::function<bool(int)>&& connectFn = {{}});
     virtual ~C{}Impl() = default;
 
     virtual Hyprutils::Memory::CSharedPointer<Hyprwire::IProtocolSpec> protocol();
@@ -703,6 +703,7 @@ class C{}Impl : public Hyprwire::IProtocolServerImplementation {{
   private:
     uint32_t m_version = 0;
     std::function<void(Hyprutils::Memory::CSharedPointer<Hyprwire::IObject>)> m_bindFn;
+    std::function<bool(int)> m_connectFn;
 }};
 )#",
                                capitalize(PROTO_DATA.name), capitalize(PROTO_DATA.name), capitalize(PROTO_DATA.name));
@@ -775,7 +776,7 @@ void C{}Object::set{}(std::function<void({})>&& fn) {{
     }
 
     SOURCE += std::format(R"#(
-C{}Impl::C{}Impl(uint32_t ver, std::function<void(Hyprutils::Memory::CSharedPointer<Hyprwire::IObject>)>&& bindFn) : m_version(ver), m_bindFn(bindFn) {{
+C{}Impl::C{}Impl(uint32_t ver, std::function<void(Hyprutils::Memory::CSharedPointer<Hyprwire::IObject>)>&& bindFn, std::function<bool(int)>&& connectFn) : m_version(ver), m_bindFn(bindFn), m_connectFn(connectFn) {{
     ;
 }}
 
@@ -798,7 +799,8 @@ std::vector<SP<Hyprwire::SServerObjectImplementation>> C{}Impl::implementation()
             makeShared<Hyprwire::SServerObjectImplementation>(Hyprwire::SServerObjectImplementation{{
                 .objectName = "{}",
                 .version    = m_version,
-                .onBind = [this] (Hyprutils::Memory::CSharedPointer<Hyprwire::IObject> r) {{ if (m_bindFn) m_bindFn(r); }}
+                .onBind = [this] (Hyprutils::Memory::CSharedPointer<Hyprwire::IObject> r) {{ if (m_bindFn) m_bindFn(r); }},
+                .onConnect = [this] (int pid) {{ return m_connectFn ? m_connectFn(pid) : true; }}
             }}),
 )#",
                                   o.name);

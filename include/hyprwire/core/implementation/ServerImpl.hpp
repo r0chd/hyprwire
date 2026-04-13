@@ -13,6 +13,7 @@ namespace Hyprwire {
         std::string                                                     objectName = "";
         uint32_t                                                        version    = 0;
         std::function<void(Hyprutils::Memory::CSharedPointer<IObject>)> onBind;
+        std::function<bool(int)>                                        onConnect;
     };
 
     class IProtocolServerImplementation {
