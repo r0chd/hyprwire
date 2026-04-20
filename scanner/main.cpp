@@ -464,7 +464,7 @@ class CC{}Object {{
     ~CC{}Object();
 
     Hyprutils::Memory::CSharedPointer<Hyprwire::IObject> getObject() {{
-        return m_object.lock();
+        return m_object;
     }}
 
 )#",
@@ -495,7 +495,7 @@ class CC{}Object {{
 
         HEADER_IMPL += R"#( } m_listeners;
         
-    Hyprutils::Memory::CWeakPointer<Hyprwire::IObject> m_object;
+    Hyprutils::Memory::CSharedPointer<Hyprwire::IObject> m_object;
 };
 )#";
     }
@@ -644,7 +644,7 @@ class C{}Object {{
     ~C{}Object();
 
     Hyprutils::Memory::CSharedPointer<Hyprwire::IObject> getObject() {{
-        return m_object.lock();
+        return m_object;
     }}
 
     void setOnDestroy(std::function<void()>&& fn) {{
@@ -685,7 +685,7 @@ class C{}Object {{
 
         HEADER_IMPL += R"#( } m_listeners;
         
-    Hyprutils::Memory::CWeakPointer<Hyprwire::IObject> m_object;
+    Hyprutils::Memory::CSharedPointer<Hyprwire::IObject> m_object;
 };
 )#";
     }
