@@ -23,6 +23,10 @@ CServerClient::CServerClient(int fd) : m_fd(fd) {
 
 CServerClient::~CServerClient() {
     TRACE(Debug::log(TRACE, "[{}] destroying client", m_fd.get()));
+
+    for (const auto& o : m_objects) {
+        o->sendDestroyIfNeeded();
+    }
 }
 
 void CServerClient::dispatchFirstPoll() {

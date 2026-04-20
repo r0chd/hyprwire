@@ -65,3 +65,16 @@ void CServerObject::error(uint32_t id, const std::string_view& message) {
     m_client->sendMessage(msg);
     errd();
 }
+
+void CServerObject::sendDestroyIfNeeded() {
+    if (!m_onDestroy)
+        return;
+
+    TRACE(Debug::log(TRACE, "[{}] object {}: calling onDestroy from sendDestroyIfNeeded", m_client->m_fd.get(), m_id));
+
+    m_onDestroy();
+
+    // remove onDestroy: this object is already dead,
+    // and we don't want to call it twice
+    m_onDestroy = nullptr;
+}

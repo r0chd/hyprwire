@@ -27,5 +27,7 @@ namespace Hyprwire {
         virtual void                                             error(uint32_t id, const std::string_view& message);
 
         WP<CServerClient>                                        m_client;
+
+        void                                                     sendDestroyIfNeeded();
     };
 };

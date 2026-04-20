@@ -34,7 +34,6 @@ namespace Hyprwire {
       protected:
         IObject() = default;
 
-      private:
         void*                 m_data = nullptr;
         std::function<void()> m_onDestroy;
     };
