@@ -375,14 +375,19 @@ void CClientSocket::destroyObject(uint32_t id) {
 }
 
 void CClientSocket::collectOrphanedObjects() {
-    std::erase_if(m_objects, [](const auto& obj) {
+    std::erase_if(m_objects, [this](const auto& obj) {
         if (!obj)
             return true;
 
         if (obj->m_id == 0)
             return false;
 
-        return obj.strongRef() == 1;
+        const bool SHOULD_REMOVE = obj.strongRef() <= 1;
+
+        if (SHOULD_REMOVE)
+            TRACE(Debug::log(TRACE, "[{} @ {:.3f}] -> Cleaning up orphaned object {}", m_fd.get(), steadyMillis(), obj->m_id));
+
+        return SHOULD_REMOVE;
     });
 }
 
